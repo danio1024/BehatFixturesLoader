@@ -8,9 +8,14 @@ use Faker\ORM\Doctrine\ColumnTypeGuesser;
 
 class EntityFakerPopulator
 {
-    public function __construct(ClassMetadata $class)
+    /**
+     * @var ClassMetadata
+     */
+    private $classMetadata;
+
+    public function __construct(ClassMetadata $classMetadata)
     {
-        $this->class = $class;
+        $this->classMetadata = $classMetadata;
     }
 
     public function fillField($entity, $fieldName, $insertedEntities = [])
@@ -18,7 +23,7 @@ class EntityFakerPopulator
         $format = $this->guessFieldFormat($fieldName);
 
         $value = is_callable($format) ? $format($insertedEntities, $entity) : $format;
-        $this->class->setFieldValue($entity, $fieldName, $value);
+        $this->classMetadata->setFieldValue($entity, $fieldName, $value);
 
         return $entity;
     }
@@ -31,7 +36,7 @@ class EntityFakerPopulator
     {
         $faker = FakerFactory::create('pl_PL');
         $guesser = new ColumnTypeGuesser($faker);
-        $format = $guesser->guessFormat($fieldName, $this->class);
+        $format = $guesser->guessFormat($fieldName, $this->classMetadata);
 
         return $format;
     }

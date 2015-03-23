@@ -25,6 +25,11 @@ class EntityFactory
      */
     private $entityCache;
 
+    /**
+     * @var EntityFieldHandler
+     */
+    private $entityFieldHandler;
+
     public function __construct(
         Kernel $kernel,
         EntityMetadataProvider $entityMetadataProvider,

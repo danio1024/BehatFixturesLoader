@@ -14,7 +14,7 @@ class EntityMetadataProvider
     private $entities;
 
     /**
-     * @var \Symfony\Component\DependencyInjection\Container
+     * @var \Symfony\Component\DependencyInjection\ContainerInterface
      */
     private $container;
 
@@ -65,11 +65,11 @@ class EntityMetadataProvider
 
         $resolver = new OptionsResolver();
         $resolver->setRequired(['class']);
-        $resolver->setOptional(['hook', 'parent']);
+        $resolver->setDefined(['hook', 'parent']);
 
         $hookResolver = new OptionsResolver();
         $hookResolver->setRequired(['class']);
-        $hookResolver->setOptional(['args']);
+        $hookResolver->setDefined(['args']);
 
         foreach ($config['entities'] as $shortName => $entityConfig) {
             $entityConfig = $resolver->resolve($entityConfig);
