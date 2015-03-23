@@ -6,6 +6,7 @@ use Behat\Behat\Context\ServiceContainer\ContextExtension;
 use Behat\Symfony2Extension\ServiceContainer\Symfony2Extension;
 use Behat\Testwork\ServiceContainer\Extension;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
+use BehatFixturesLoader\Context\EntityFactoryAwareContextInitializer;
 use BehatFixturesLoader\EntityFactory\EntityCache;
 use BehatFixturesLoader\EntityFactory\EntityFactory;
 use BehatFixturesLoader\EntityFactory\EntityMetadataProvider;
@@ -122,10 +123,10 @@ class BehatFixturesLoaderExtension implements Extension
 
     private function loadEntityFactoryContextInitializer(ContainerBuilder $container)
     {
-        $definition = new Definition('Behat\Symfony2Extension\Context\Initializer\KernelAwareInitializer', array(
+        $definition = new Definition(EntityFactoryAwareContextInitializer::class, array(
             new Reference(EntityFactory::SERVICE_ID),
         ));
         $definition->addTag(ContextExtension::INITIALIZER_TAG, array('priority' => 1));
-        $container->setDefinition('behat_fixtures_loader.context_initializer.entity_factory_aware', $definition);
+        $container->setDefinition(EntityFactoryAwareContextInitializer::SERVICE_ID, $definition);
     }
 }

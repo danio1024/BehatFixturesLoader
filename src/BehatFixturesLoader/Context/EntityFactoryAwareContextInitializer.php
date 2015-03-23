@@ -8,6 +8,8 @@ use BehatFixturesLoader\EntityFactory\EntityFactory;
 
 class EntityFactoryAwareContextInitializer implements ContextInitializer
 {
+    const SERVICE_ID = 'behat_fixtures_loader.context_initializer.entity_factory_aware';
+
     private $entityFactory;
 
     public function __construct(EntityFactory $entityFactory)
