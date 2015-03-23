@@ -25,7 +25,7 @@ class EntityFakerPopulator
 
     /**
      * @param $fieldName
-     * @return callable|null
+     * @return \Closure|null
      */
     private function guessFieldFormat($fieldName)
     {
