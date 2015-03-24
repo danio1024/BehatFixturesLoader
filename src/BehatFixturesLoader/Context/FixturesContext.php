@@ -24,7 +24,7 @@ class FixturesContext implements KernelAwareContext, EntityFactoryAware
     }
 
     /**
-     * @Given /^there are following :name:$/
+     * @Given there are following :name:
      * @param $name
      */
     public function followingEntities($name, TableNode $data)
