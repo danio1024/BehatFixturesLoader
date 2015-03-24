@@ -6,12 +6,25 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use BehatFixturesLoader\EntityFactory\EntityFactory;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class FixturesContext implements KernelAwareContext, EntityFactoryAware
 {
+    /**
+     * @var EntityFactory
+     */
     private $entityFactory;
+
+    /**
+     * @var ContainerInterface
+     */
     private $container;
+
+    /**
+     * @var bool
+     */
+    private $useBrutalPurge;
 
     /**
      * @BeforeScenario
@@ -19,8 +32,20 @@ class FixturesContext implements KernelAwareContext, EntityFactoryAware
     public function purgeDatabase()
     {
         $purger = new ORMPurger($this->getEntityManager());
-        $purger->setPurgeMode(ORMPurger::PURGE_MODE_DELETE);
-        $purger->purge();
+
+        if ($this->useBrutalPurge) {
+            $connection = $this->getEntityManager()->getConnection();
+
+            try {
+                $connection->executeQuery('SET FOREIGN_KEY_CHECKS = 0');
+                $purger->purge();
+            } finally {
+                $connection->executeQuery('SET FOREIGN_KEY_CHECKS = 1');
+            }
+        } else {
+            $purger->setPurgeMode(ORMPurger::PURGE_MODE_DELETE);
+            $purger->purge();
+        }
     }
 
     /**
@@ -63,5 +88,10 @@ class FixturesContext implements KernelAwareContext, EntityFactoryAware
     public function setEntityFactory(EntityFactory $entityFactory)
     {
         $this->entityFactory = $entityFactory;
+    }
+
+    public function setBrutalPurge($useBrutalPurge)
+    {
+        $this->useBrutalPurge = $useBrutalPurge;
     }
 }

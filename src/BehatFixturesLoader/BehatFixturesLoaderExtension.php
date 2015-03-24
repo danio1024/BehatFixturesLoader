@@ -63,6 +63,7 @@ class BehatFixturesLoaderExtension implements Extension
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('configPath')->defaultValue('features/entities.yml')->end()
+                ->booleanNode('useBrutalPurge')->defaultFalse()->end()
             ->end()
         ->end();
     }
@@ -77,6 +78,7 @@ class BehatFixturesLoaderExtension implements Extension
     {
         $basePath = $container->getParameter('paths.base');
         $container->setParameter('behat_fixtures_loader.config_path', $basePath.'/'.$config['configPath']);
+        $container->setParameter('behat_fixtures_loader.use_brutal_purge', (bool) $config['useBrutalPurge']);
 
         $this->loadEntityCache($container);
         $this->loadMetadataProvider($container);
@@ -125,6 +127,7 @@ class BehatFixturesLoaderExtension implements Extension
     {
         $definition = new Definition(EntityFactoryAwareContextInitializer::class, array(
             new Reference(EntityFactory::SERVICE_ID),
+            '%behat_fixtures_loader.use_brutal_purge%'
         ));
         $definition->addTag(ContextExtension::INITIALIZER_TAG, array('priority' => 1));
         $container->setDefinition(EntityFactoryAwareContextInitializer::SERVICE_ID, $definition);

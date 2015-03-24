@@ -7,4 +7,5 @@ use BehatFixturesLoader\EntityFactory\EntityFactory;
 interface EntityFactoryAware
 {
     public function setEntityFactory(EntityFactory $entityFactory);
+    public function setBrutalPurge($useBrutalPurge);
 }
