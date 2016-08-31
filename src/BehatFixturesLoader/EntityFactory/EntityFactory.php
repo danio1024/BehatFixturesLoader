@@ -47,7 +47,9 @@ class EntityFactory
 
         $entityFullName = $entityMetadata->getFullName();
 
-        $entity = new $entityFullName();
+        $reflection = new \ReflectionClass($entityFullName);
+
+        $entity = $reflection->newInstanceWithoutConstructor();
 
         $classMetadata = $this->entityManager->getClassMetadata($entityFullName);
 
