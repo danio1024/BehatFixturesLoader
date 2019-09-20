@@ -65,6 +65,7 @@ class EntityFactory
 
             $entityId = $dataFromBehat['id'];
 
+            $entityId = $this->getEntityId($dataFromBehat['id'], $classMetadata);
             $entity = $this->entityFieldHandler->setId($entity, $entityId);
 
             unset($dataFromBehat['id']);
@@ -135,5 +136,21 @@ class EntityFactory
         }
 
         return $entity;
+    }
+
+    /**
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     */
+    private function getEntityId($entityId, ClassMetadata $classMetadata)
+    {
+        $identifierColumnMapping = $classMetadata->getFieldMapping($classMetadata->getSingleIdentifierColumnName());
+        if (!empty($identifierColumnMapping) && $identifierColumnType = $identifierColumnMapping['type']) {
+            switch ($identifierColumnType) {
+                case 'integer':
+                    return (int)$entityId;
+            }
+        }
+
+        return $entityId;
     }
 }
